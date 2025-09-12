@@ -1,0 +1,35 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary p-2">
+    <div class="container">
+    <a class="navbar-brand" routerLink="/" (click)="closeMenu()">
+        <i class="bi bi-bank me-2"></i>
+        BrainRidge Banking
+    </a>
+    
+    <button class="navbar-toggler" type="button" (click)="toggleMenu()" [attr.aria-expanded]="!isMenuCollapsed()" aria-controls="navbarNav" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarNav" [class.show]="!isMenuCollapsed()">
+        <ul class="navbar-nav ms-auto">
+        <li class="nav-item me-3">
+            <a class="nav-link" routerLink="/accounts" routerLinkActive="active">
+            <i class="bi bi-credit-card me-1"></i>
+            Accounts
+            </a>
+        </li>
+        <li class="nav-item me-3">
+            <a class="nav-link" routerLink="/create-account" routerLinkActive="active">
+            <i class="bi bi-plus-circle me-1"></i>
+            Create Account
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" routerLink="/transfer-funds" routerLinkActive="active">
+            <i class="bi bi-arrow-left-right me-1"></i>
+            Transfer Funds
+            </a>
+        </li>
+        </ul>
+    </div>
+    </div>
+</nav>

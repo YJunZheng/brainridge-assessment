@@ -1,0 +1,10 @@
+<button 
+  [type]="type"
+  [class]="buttonClasses"
+  [disabled]="disabled"
+  (click)="handleClick()">
+  @if (icon) {
+  <i [class]="iconClasses"></i>
+  }
+  {{ text }}
+</button>

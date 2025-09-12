@@ -1,0 +1,13 @@
+.form-check.card {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.form-check.card:hover {
+  background-color: #f8f9fa;
+}
+.form-check.card.border-primary {
+  background-color: rgba(13, 110, 253, 0.1);
+}
+.bi {
+  font-size: 2rem;
+}

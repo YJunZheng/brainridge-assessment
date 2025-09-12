@@ -1,0 +1,277 @@
+<div class="container mt-5 mb-5">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h2 class="mb-1">
+            <i class="bi bi-clock-history me-2"></i>
+            Transaction History
+          </h2>
+          @if (account()) {
+          <p class="text-muted mb-0">{{ account()?.accountName }} ({{ account()?.accountType }})</p>
+          }
+        </div>
+        <button class="btn btn-outline-primary" (click)="goBack()">
+          <i class="bi bi-arrow-left me-2"></i>
+          Back to Accounts
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Account Info Card -->
+  @if (account()) {
+  <div class="card border-1 shadow-sm mb-4">
+    <div class="card-body p-4">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h5 class="mb-1">{{ account()?.accountName }}</h5>
+          <p class="text-muted mb-0">
+            <i
+              class="bi me-1"
+              [class.bi-credit-card]="account()?.accountType === 'Chequing'"
+              [class.bi-piggy-bank]="account()?.accountType === 'Savings'"
+            ></i>
+            {{ account()?.accountType }} Account
+          </p>
+        </div>
+        <div class="text-end">
+          <small class="text-muted">Current Balance</small>
+          <h4 class="text-success mb-0">{{ formatCurrency(account()?.balance || 0) }}</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- Transactions -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card shadow-sm">
+        <div class="card-header bg-white border-0 pt-4 px-4">
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+              <i class="bi bi-list-ul me-2"></i>
+              Recent Transactions
+            </h5>
+            <div class="d-flex gap-2">
+              <button class="btn btn-outline-secondary btn-sm" (click)="toggleFilters()">
+                <i class="bi bi-funnel me-1"></i>
+                {{ showFilters() ? 'Hide Filters' : 'Show Filters' }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filters Section -->
+        @if (showFilters()) {
+        <div class="card-body border-bottom">
+          <form [formGroup]="filterForm" (ngSubmit)="applyFilters()">
+            <div class="row g-3">
+              <!-- Date Range -->
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Date Range</label>
+                <div class="row g-2">
+                  <div class="col-6">
+                    <label for="dateFrom" class="form-label text-muted small">From</label>
+                    <input
+                      type="date"
+                      id="dateFrom"
+                      class="form-control"
+                      formControlName="dateFrom"
+                    />
+                  </div>
+                  <div class="col-6">
+                    <label for="dateTo" class="form-label text-muted small">To</label>
+                    <input type="date" id="dateTo" class="form-control" formControlName="dateTo" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Amount Range -->
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Amount Range (CAD)</label>
+                <div class="row g-2">
+                  <div class="col-6">
+                    <label for="minAmount" class="form-label text-muted small">Min Amount</label>
+                    <input
+                      type="number"
+                      id="minAmount"
+                      class="form-control"
+                      placeholder="0.00"
+                      step="0.01"
+                      min="0"
+                      formControlName="minAmount"
+                    />
+                  </div>
+                  <div class="col-6">
+                    <label for="maxAmount" class="form-label text-muted small">Max Amount</label>
+                    <input
+                      type="number"
+                      id="maxAmount"
+                      class="form-control"
+                      placeholder="999999.99"
+                      step="0.01"
+                      min="0"
+                      formControlName="maxAmount"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Filter Buttons -->
+            <div class="d-flex gap-2 mt-3">
+              <button type="submit" class="btn btn-primary">
+                <i class="bi bi-search me-1"></i>
+                Apply Filters
+              </button>
+              <button type="button" class="btn btn-outline-secondary" (click)="clearFilters()">
+                <i class="bi bi-x-circle me-1"></i>
+                Clear Filters
+              </button>
+            </div>
+          </form>
+        </div>
+        }
+
+        <!-- Results Info and Items Per Page -->
+        <div class="card-body border-bottom py-3">
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="text-muted">
+              <small>
+                Showing {{ currentPage() * itemsPerPage() + 1 }} to
+                {{ Math.min((currentPage() + 1) * itemsPerPage(), totalItems()) }}
+                of {{ totalItems() }} transactions
+              </small>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <label for="itemsPerPage" class="form-label mb-0 text-muted small"
+                >Items per page:</label
+              >
+              <select
+                id="itemsPerPage"
+                class="form-select form-select-sm"
+                style="width: auto"
+                [value]="itemsPerPage()"
+                (change)="onItemsPerPageChange($event)"
+              >
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="15">15</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-body p-0">
+          @if (totalItems() === 0) {
+          <div class="p-4 text-center text-muted">
+            <i class="bi bi-inbox display-1 text-muted d-block mb-3"></i>
+            <p class="mb-0">No transactions found for the selected criteria.</p>
+          </div>
+          } @else {
+          <div class="list-group list-group-flush">
+            @for (transaction of paginatedTransactions(); track transaction.id) {
+            <div class="list-group-item list-group-item-action pt-4 px-4">
+              <div class="row align-items-center">
+                <div class="col-auto">
+                  <div
+                    class="rounded-circle d-flex align-items-center justify-content-center"
+                    [class.bg-danger]="transaction.fromAccountId === accountId"
+                    [class.bg-success]="transaction.toAccountId === accountId"
+                    [class.text-white]="true"
+                    style="width: 40px; height: 40px"
+                  >
+                    <i
+                      class="bi"
+                      [class.bi-arrow-up]="transaction.fromAccountId === accountId"
+                      [class.bi-arrow-down]="transaction.toAccountId === accountId"
+                    ></i>
+                  </div>
+                </div>
+
+                <div class="col">
+                  <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                      <h6 class="mb-1">
+                        @if (transaction.fromAccountId === accountId) {
+                        <span>Transfer to {{ getAccountName(transaction.toAccountId) }}</span>
+                        } @if (transaction.toAccountId === accountId) {
+                        <span>Transfer from {{ getAccountName(transaction.fromAccountId) }}</span>
+                        }
+                      </h6>
+                      <small class="text-muted">
+                        <i class="bi bi-calendar me-1"></i>
+                        {{ transaction.timestamp | date : 'medium' }}
+                      </small>
+                    </div>
+
+                    <div class="text-end">
+                      <div
+                        class="fw-bold"
+                        [class.text-danger]="transaction.fromAccountId === accountId"
+                        [class.text-success]="transaction.toAccountId === accountId"
+                      >
+                        @if (transaction.fromAccountId === accountId) {
+                        <span>-</span>
+                        } @if (transaction.toAccountId === accountId) {
+                        <span>+</span>
+                        }
+                        {{ formatCurrency(transaction.amount) }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            }
+          </div>
+
+          <!-- Pagination -->
+          @if (totalPages() > 1) {
+          <div class="card-footer bg-white border-0 p-3 pt-4">
+            <nav aria-label="Transaction pagination">
+              <ul class="pagination justify-content-center mb-0">
+                <!-- Previous button -->
+                <li class="page-item" [class.disabled]="currentPage() === 0">
+                  <button class="page-link" (click)="prevPage()" [disabled]="currentPage() === 0">
+                    <i class="bi bi-chevron-left"></i>
+                  </button>
+                </li>
+
+                <!-- Page numbers -->
+                @for (page of pageRange(); track page) {
+                <li class="page-item" [class.active]="page === currentPage()">
+                  <button class="page-link" (click)="goToPage(page)">
+                    {{ page + 1 }}
+                  </button>
+                </li>
+                }
+
+                <!-- Next button -->
+                <li class="page-item" [class.disabled]="currentPage() === totalPages() - 1">
+                  <button
+                    class="page-link"
+                    (click)="nextPage()"
+                    [disabled]="currentPage() === totalPages() - 1"
+                  >
+                    <i class="bi bi-chevron-right"></i>
+                  </button>
+                </li>
+              </ul>
+            </nav>
+          </div>
+          }
+          @else {
+            <div class="card-footer bg-white border-0 pt-3">
+            </div>
+          }
+        }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

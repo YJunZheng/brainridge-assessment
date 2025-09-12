@@ -1,0 +1,9 @@
+.clickable-card {
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    border: 1px solid var(--bs-primary) !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+}

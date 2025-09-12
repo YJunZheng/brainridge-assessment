@@ -1,0 +1,125 @@
+<div class="container mt-5 mb-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white p-3">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-plus-circle me-3" style="font-size: 1.25rem;"></i>
+            <h4 class="mb-1">Create New Account</h4>
+          </div>
+          <small>Set up your new banking account</small>
+        </div>
+
+        <div class="card-body">
+          <form [formGroup]="accountForm" (ngSubmit)="onSubmit()">
+            <!-- Account Name Field -->
+            <div class="mb-3">
+              <label for="accountName" class="form-label">Account Name</label>
+              <input
+                type="text"
+                class="form-control"
+                id="accountName"
+                formControlName="accountName"
+                placeholder="e.g., Primary Chequing"
+                maxlength="50"
+                [class.is-invalid]="
+                  accountForm.get('accountName')?.touched && accountForm.get('accountName')?.invalid
+                "
+              />
+              <div class="form-text">
+                Enter a descriptive name for your account (1-50 characters)
+              </div>
+              @if (accountForm.get('accountName')?.touched && accountForm.get('accountName')?.invalid) {
+              <div class="invalid-feedback">
+                {{ getErrorMessage('accountName') }}
+              </div>
+              }
+            </div>
+
+            <!-- Account Type Field -->
+            <div class="mb-3">
+              <label class="form-label">Account Type</label>
+              <div class="row">
+                @for (type of accountTypes; track type) {
+                <div class="col-sm-6 mb-2">
+                  <div
+                    class="form-check card h-100"
+                    [class.border-primary]="accountForm.get('accountType')?.value === type"
+                  >
+                    <div class="card-body text-center">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        [value]="type"
+                        formControlName="accountType"
+                        [id]="'type-' + type"
+                      />
+                      <label class="form-check-label w-100" [for]="'type-' + type">
+                        <i
+                          class="bi d-block mb-2"
+                          [class.bi-credit-card]="type === 'Chequing'"
+                          [class.bi-piggy-bank]="type === 'Savings'"
+                          [class.text-primary]="type === 'Chequing'"
+                          [class.text-success]="type === 'Savings'"
+                        ></i>
+                        <strong>{{ type }}</strong>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                }
+              </div>
+            </div>
+
+            <!-- Initial Balance Field -->
+            <div class="mb-3">
+              <label for="balance" class="form-label">Initial Balance</label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="balance"
+                  formControlName="balance"
+                  placeholder="0.00"
+                  min="0"
+                  step="0.01"
+                  [class.is-invalid]="
+                    accountForm.get('balance')?.touched && accountForm.get('balance')?.invalid
+                  "
+                />
+              </div>
+              <div class="form-text">Enter the starting balance for your account</div>
+              @if (accountForm.get('balance')?.touched && accountForm.get('balance')?.invalid) {
+              <div class="invalid-feedback d-block">
+                {{ getErrorMessage('balance') }}
+              </div>
+              }
+            </div>
+          </form>
+        </div>
+
+        <div class="card-footer bg-light border-0 p-3">
+          <div class="d-flex justify-content-end gap-2">
+            <app-custom-button
+              text="Cancel"
+              color="danger"
+              icon="bi-x-circle"
+              (clicked)="navigateToAccounts()"
+            >
+            </app-custom-button>
+
+            <app-custom-button
+              text="Create Account"
+              [color]="accountForm.get('accountType')?.value === 'Chequing' ? 'primary' : accountForm.get('accountType')?.value === 'Savings' ? 'success' : 'primary'"
+              icon="bi-plus-circle"
+              [disabled]="accountForm.invalid"
+              (clicked)="onSubmit()"
+            >
+            </app-custom-button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
