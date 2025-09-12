@@ -24,7 +24,7 @@ export class FundTransfer {
     {
       fromAccountId: ['', Validators.required],
       toAccountId: ['', Validators.required],
-      amount: ['', [Validators.required, Validators.min(0.01), Validators.max(1000000)]],
+      amount: ['', [Validators.required, Validators.min(0.01)]],
       description: ['', Validators.maxLength(100)],
     },
     { validators: [this.sameAccountValidator, this.insufficientFundsValidator.bind(this)] }
@@ -88,9 +88,6 @@ export class FundTransfer {
     }
     if (control?.hasError('min')) {
       return `${fieldName} must be at least $0.01`;
-    }
-    if (control?.hasError('max')) {
-      return `${fieldName} cannot exceed $1,000,000`;
     }
     if (control?.hasError('maxlength')) {
       return `${fieldName} cannot exceed 100 characters`;

@@ -22,10 +22,29 @@ export class AccountCreation {
   accountForm: FormGroup = this.fb.group({
     accountName: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(50)]],
     accountType: ['Chequing', Validators.required],
-    balance: [null, [Validators.required, Validators.min(0), Validators.max(1000000)]]
+    balance: [null, [Validators.required, this.nonNegativeValidator]]
   });
 
   accountTypes = ['Chequing', 'Savings'];
+
+  // Custom validator to handle -0 and ensure truly non-negative values
+  private nonNegativeValidator(control: any) {
+    const value = control.value;
+    if (value === null || value === undefined || value === '') {
+      return null;
+    }
+    
+    const numValue = Number(value);
+    if (isNaN(numValue)) {
+      return { invalidNumber: true };
+    }
+    
+    if (Object.is(numValue, -0) || numValue < 0) {
+      return { min: true };
+    }
+    
+    return null;
+  }
 
   onSubmit(): void {
     if (this.accountForm.valid) {
