@@ -4,7 +4,6 @@ import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-toasts',
-  standalone: true,
   imports: [CommonModule],
   templateUrl: './toasts.html',
   styleUrls: ['./toasts.scss']

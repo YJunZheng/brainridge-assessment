@@ -6,7 +6,6 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-account-list',
-  standalone: true,
   imports: [CommonModule, CustomButton],
   templateUrl: './account-list.html',
   styleUrl: './account-list.scss'

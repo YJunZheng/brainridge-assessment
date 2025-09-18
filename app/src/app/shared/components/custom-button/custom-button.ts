@@ -4,7 +4,6 @@ export type ButtonColor = 'primary' | 'secondary' | 'success' | 'danger' | 'warn
 
 @Component({
   selector: 'app-custom-button',
-  standalone: true,
   templateUrl: './custom-button.html',
   styleUrl: './custom-button.scss'
 })

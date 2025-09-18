@@ -8,7 +8,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-fund-transfer',
-  standalone: true,
   imports: [CommonModule, ReactiveFormsModule, CustomButton],
   templateUrl: './fund-transfer.html',
   styleUrl: './fund-transfer.scss',

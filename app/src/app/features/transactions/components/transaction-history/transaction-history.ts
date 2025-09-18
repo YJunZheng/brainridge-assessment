@@ -7,7 +7,6 @@ import { DataService } from '../../../../core/services/data.service';
 
 @Component({
   selector: 'app-transaction-history',
-  standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './transaction-history.html',
   styleUrl: './transaction-history.scss'

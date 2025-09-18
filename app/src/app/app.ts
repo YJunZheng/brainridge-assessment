@@ -4,7 +4,6 @@ import { Header, ToastsComponent } from './shared';
 
 @Component({
   selector: 'app-root',
-  standalone: true,
   imports: [RouterOutlet, Header, ToastsComponent],
   templateUrl: './app.html',
   styleUrls: ['./app.scss']

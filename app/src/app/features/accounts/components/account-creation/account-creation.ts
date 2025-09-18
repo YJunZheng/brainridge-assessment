@@ -8,7 +8,6 @@ import { ToastService } from '../../../../core/services/toast.service';
 
 @Component({
   selector: 'app-account-creation',
-  standalone: true,
   imports: [CommonModule, ReactiveFormsModule, CustomButton],
   templateUrl: './account-creation.html',
   styleUrls: ['./account-creation.scss']
